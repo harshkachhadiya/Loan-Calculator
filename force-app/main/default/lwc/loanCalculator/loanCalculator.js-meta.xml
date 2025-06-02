@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<masterLabel>Loan Calculator</masterLabel>
+	<apiVersion>62.0</apiVersion>
+	<description>Loan Calculator</description>
+	<isExposed>true</isExposed>
+	<targets>
+		<target>lightning__Tab</target>
+	</targets>
+</LightningComponentBundle>

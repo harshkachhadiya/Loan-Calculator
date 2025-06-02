@@ -1,0 +1,602 @@
+<template>
+
+    <div class="loan-calculator-container">
+
+        <lightning-card icon-name="custom:custom16" title="Loan Calculator">
+
+            <lightning-button-group slot="actions">
+                <lightning-button label="Copy Details" onclick={handleClickCopyDetails}>
+                </lightning-button>
+
+                <lightning-button label="Generate Documents" onclick={handleClickGenerateDocuments}>
+                </lightning-button>
+            </lightning-button-group>
+
+            <lightning-layout multiple-rows>
+                <lightning-layout-item size="12" padding="around-small">
+
+                    <lightning-tabset>
+                        <lightning-tab label="Details">
+
+                            <lightning-layout multiple-rows>
+                                <lightning-layout-item size="6" padding="around-small">
+
+                                    <lightning-layout multiple-rows>
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" formatter="currency" step="0.01"
+                                                label="Purchase Price" data-name="purchasePrice"
+                                                value={loan.purchasePrice} onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" formatter="currency" step="0.01"
+                                                label="Deposit" data-name="deposit" value={loan.deposit}
+                                                onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Loan Amount" value={loan.loanAmount}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input type="checkbox" variant="label-stacked"
+                                                label="Lender Fee Financed" data-name="lenderFeeFinanced"
+                                                value={loan.lenderFeeFinanced} onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" formatter="currency" step="0.01"
+                                                label="Lender Fee" data-name="lenderFee" value={loan.lenderFee}
+                                                onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Amount Financed (Lender Fee)"
+                                                value={loan.amountFinancedLenderFee}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input type="checkbox" variant="label-stacked"
+                                                label="Other Fees/Charges" data-name="otherFeesChargesFinanced"
+                                                value={loan.otherFeesChargesFinanced} onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <template if:true={loan.otherFeesChargesFinanced}>
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input required type="number" formatter="currency" step="0.01"
+                                                    label="Other Fees/Charges" data-name="otherFeesCharges"
+                                                    value={loan.otherFeesCharges} onchange={handleChangeInput}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                        </template>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Net Amount Financed" value={loan.netAmountFinanced}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-combobox label="Balloon Type" options={balloonTypeOptions}
+                                                data-name="balloonType" value={loan.balloonType}
+                                                onchange={handleChangeInput}>
+                                            </lightning-combobox>
+                                        </lightning-layout-item>
+
+                                        <template if:true={showBalloonValueValue}>
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input required type="number" formatter="currency" step="0.01"
+                                                    label="Balloon Value (Value)" data-name="balloonValueValue"
+                                                    value={loan.balloonValueValue} onchange={handleChangeInput}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                        </template>
+
+                                        <template if:true={showBalloonValuePercentage}>
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input required type="number" formatter="percent-fixed"
+                                                    step="0.01" label="Balloon Value (Percentage)"
+                                                    data-name="balloonValuePercentage"
+                                                    value={loan.balloonValuePercentage} onchange={handleChangeInput}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                        </template>
+
+                                        <template if:true={showBallonAmount}>
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                    label="Balloon Amount" value={loan.balloonAmount}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                        </template>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input type="checkbox" variant="label-stacked" label="GST Recoup"
+                                                data-name="gstRecoup" value={loan.gstRecoup}
+                                                onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <template if:true={loan.gstRecoup}>
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input required type="number" formatter="currency" step="0.01"
+                                                    label="GST Amount" data-name="gstAmount" value={loan.gstAmount}
+                                                    onchange={handleChangeInput}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                                <lightning-input required type="number" label="GST Recoup Instalment"
+                                                    data-name="gstRecoupInstalment" value={loan.gstRecoupInstalment}
+                                                    onchange={handleChangeInput}>
+                                                </lightning-input>
+                                            </lightning-layout-item>
+                                        </template>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" formatter="currency" step="0.01"
+                                                label="Account Keeping Fee" data-name="accountKeepingFee"
+                                                value={loan.accountKeepingFee} onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+
+                                </lightning-layout-item>
+
+                                <lightning-layout-item size="6" padding="around-small">
+
+                                    <lightning-layout multiple-rows>
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-combobox required label="Repayment Structure"
+                                                options={repaymentStructureOptions} data-name="repaymentStructure"
+                                                value={loan.repaymentStructure} onchange={handleChangeInput}>
+                                            </lightning-combobox>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-combobox required label="Repayment Frequency"
+                                                options={repaymentFrequencyOptions} data-name="repaymentFrequency"
+                                                value={loan.repaymentFrequency} onchange={handleChangeInput}>
+                                            </lightning-combobox>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" label="Number Of Instalments"
+                                                data-name="numberOfInstalments" value={loan.numberOfInstalments}
+                                                onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="date" label="Loan Start Date"
+                                                data-name="loanStartDate" value={loan.loanStartDate}
+                                                onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="date" label="First Repayment Due Date"
+                                                value={loan.firstRepaymentDueDate}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="date" label="Loan End Date"
+                                                value={loan.loanEndDate}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input required type="number" formatter="percent-fixed"
+                                                step="0.00001" label="Interest Rate" data-name="interestRate"
+                                                value={loan.interestRate} onchange={handleChangeInput}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Schedule Repayment" value={loan.scheduleRepayment}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="GST Amount / Balloon Amount / Additional Repayments"
+                                                value={loan.totalAdditionalRepayments}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Estimated Total Interest Charges"
+                                                value={loan.totalInterestCharges}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+
+                                        <lightning-layout-item class="slds-p-top_xxx-small" size="12">
+                                            <lightning-input disabled type="number" formatter="currency" step="0.01"
+                                                label="Estimated Principal And Interest To Be Paid Over The Term Of The Loan"
+                                                value={loan.totalAmountToBePaid}>
+                                            </lightning-input>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                        </lightning-tab>
+
+                        <lightning-tab label="Instalments">
+
+                            <lightning-layout multiple-rows>
+                                <template if:true={instalments}>
+                                    <lightning-layout-item size="12" padding="around-small">
+                                        <lightning-datatable hide-checkbox-column key-field="instalmentNo"
+                                            columns={columns} data={instalments}>
+                                        </lightning-datatable>
+                                    </lightning-layout-item>
+                                </template>
+
+                                <lightning-layout-item size="12" padding="around-small">
+                                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="slds-text-align_center" colspan="2">
+                                                    Totals
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <template if:true={loan.gstRecoup}>
+                                                <tr>
+                                                    <td>
+                                                        GST Amount
+                                                    </td>
+                                                    <td class="slds-text-align_right">
+                                                        <lightning-formatted-number format-style="currency"
+                                                            value={loan.gstAmount}>
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <template if:true={showBallonAmount}>
+                                                <tr>
+                                                    <td>
+                                                        Balloon Amount
+                                                    </td>
+                                                    <td class="slds-text-align_right">
+                                                        <lightning-formatted-number format-style="currency"
+                                                            value={loan.balloonAmount}>
+                                                        </lightning-formatted-number>
+                                                    </td>
+                                                </tr>
+                                            </template>
+                                            <tr>
+                                                <td>
+                                                    GST Amount / Balloon Amount / Additional Repayments
+                                                </td>
+                                                <td class="slds-text-align_right">
+                                                    <lightning-formatted-number format-style="currency"
+                                                        value={loan.totalAdditionalRepayments}>
+                                                    </lightning-formatted-number>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Estimated Total Interest Charges
+                                                </td>
+                                                <td class="slds-text-align_right">
+                                                    <lightning-formatted-number format-style="currency"
+                                                        value={loan.totalInterestCharges}>
+                                                    </lightning-formatted-number>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Estimated Principal And Interest To Be Paid Over The Term Of The
+                                                    Loan
+                                                </td>
+                                                <td class="slds-text-align_right">
+                                                    <lightning-formatted-number format-style="currency"
+                                                        value={loan.totalAmountToBePaid}>
+                                                    </lightning-formatted-number>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </lightning-layout-item>
+                            </lightning-layout>
+
+                        </lightning-tab>
+
+                        <lightning-tab label="Comparisons">
+
+                            <lightning-accordion allow-multiple-sections-open active-section-name={activeSections}>
+                                <lightning-accordion-section name="A" label="By Loan Term Months">
+
+                                    <lightning-layout multiple-rows>
+
+                                        <template for:each={loansByComparisonNumberOfInstalments}
+                                            for:item="loanByComparision">
+
+                                            <lightning-layout-item key={loanByComparision.loan.numberOfInstalments}
+                                                class="slds-text-align_right" size="12" padding="around-small">
+                                                <lightning-button label="Copy Details"
+                                                    data-numberofinstalments={loanByComparision.loan.numberOfInstalments}
+                                                    onclick={handleClickCopyComparisonDetailsByNumberOfInstalments}>
+                                                </lightning-button>
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item key={loanByComparision.loan.numberOfInstalments}
+                                                size="12" padding="around-small">
+
+                                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="5" class="slds-text-align_center">
+                                                                Loan Term Months
+                                                                ({loanByComparision.loan.numberOfInstalments}
+                                                                Months)
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                Balloon Value (Percentage)
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.balloonValuePercentage}>
+                                                                    {loan.balloonValuePercentage}%
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Loan Amount
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.loanAmount}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.loanAmount}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Balloon Amount
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.balloonAmount}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.balloonAmount}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Schedule Repayment
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.scheduleRepayment}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.scheduleRepayment}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Estimated Total Interest Charges
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.totalInterestCharges}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.totalInterestCharges}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Estimated Principal And Interest To Be Paid Over The
+                                                                Term Of
+                                                                The Loan
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.totalAmountToBePaid}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.totalAmountToBePaid}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </lightning-layout-item>
+
+                                        </template>
+
+                                    </lightning-layout>
+
+                                </lightning-accordion-section>
+
+                                <lightning-accordion-section name="B" label="By Balloon Percentage">
+
+                                    <lightning-layout multiple-rows>
+
+                                        <template for:each={loansByComparisonBalloonAmountPercentage}
+                                            for:item="loanByComparision">
+
+                                            <lightning-layout-item key={loanByComparision.loan.balloonValuePercentage}
+                                                class="slds-text-align_right" size="12" padding="around-small">
+                                                <lightning-button label="Copy Details"
+                                                    data-balloonvaluepercentage={loanByComparision.loan.balloonValuePercentage}
+                                                    onclick={handleClickCopyComparisonDetailsByBalloonAmount}>
+                                                </lightning-button>
+                                            </lightning-layout-item>
+
+                                            <lightning-layout-item key={loanByComparision.loan.balloonValuePercentage}
+                                                size="12" padding="around-small">
+
+                                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                                    <thead>
+                                                        <tr>
+                                                            <th colspan="6" class="slds-text-align_center">
+                                                                Balloon Percentage
+                                                                ({loanByComparision.loan.balloonValuePercentage}%) /
+                                                                Balloon Amount (<lightning-formatted-number
+                                                                    format-style="currency"
+                                                                    value={loanByComparision.loan.balloonAmount}>
+                                                                </lightning-formatted-number>)
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                Loan Term (Months)
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.numberOfInstalments}>
+                                                                    {loan.numberOfInstalments}
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Loan Amount
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.loanAmount}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.loanAmount}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Schedule Repayment
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.scheduleRepayment}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.scheduleRepayment}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Estimated Total Interest Charges
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.totalInterestCharges}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.totalInterestCharges}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                Estimated Principal And Interest To Be Paid Over The
+                                                                Term Of
+                                                                The
+                                                                Loan
+                                                            </td>
+                                                            <template for:each={loanByComparision.loans}
+                                                                for:item="loan">
+                                                                <td key={loan.totalAmountToBePaid}>
+                                                                    <lightning-formatted-number format-style="currency"
+                                                                        value={loan.totalAmountToBePaid}>
+                                                                    </lightning-formatted-number>
+                                                                </td>
+                                                            </template>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+
+                                            </lightning-layout-item>
+
+                                        </template>
+
+                                    </lightning-layout>
+
+                                </lightning-accordion-section>
+                            </lightning-accordion>
+
+                        </lightning-tab>
+                    </lightning-tabset>
+
+                </lightning-layout-item>
+            </lightning-layout>
+
+        </lightning-card>
+
+        <template if:true={isGenerateDocumentsModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+
+                    <header class="slds-modal__header">
+                        <lightning-button-icon class="slds-modal__close" icon-name="utility:close"
+                            alternative-text="Close" title="Close" onclick={closeGenerateDocumentsModal}>
+                        </lightning-button-icon>
+
+                        <h2 class="slds-modal__title slds-hyphenate">
+                            Loan Documents
+                        </h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+
+                        <lightning-layout multiple-rows>
+                            <lightning-layout-item size="12" padding="around-small">
+
+                                <iframe style="border: 0;" width="100%" height="600px" src={documentUrl}
+                                    frameborder="0">
+                                </iframe>
+
+                            </lightning-layout-item>
+                        </lightning-layout>
+
+                    </div>
+
+                </div>
+            </section>
+
+            <div class="slds-backdrop slds-backdrop_open">
+            </div>
+        </template>
+
+    </div>
+
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="medium">
+        </lightning-spinner>
+    </template>
+
+</template>

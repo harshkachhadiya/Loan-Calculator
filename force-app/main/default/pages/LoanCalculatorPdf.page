@@ -1,0 +1,819 @@
+<apex:page readOnly="true"   
+           applyHtmlTag="false"    
+           sidebar="false"    
+           showHeader="false"    
+           cache="true"    
+           renderAs="advanced_pdf"
+           docType="html-5.0"
+           standardStylesheets="false"
+           controller="LoanCalculatorPdfCtrl">
+    
+    <html>
+        
+        <head>   
+            
+            <meta http-equiv="Content-Type" 
+                  content="text/html; charset=UTF-8" />  
+            
+            <style type="text/css">
+                
+                @page {
+                size: A4;
+                font-family: Arial Unicode MS;
+                
+                @top-center {
+                content: element(header);
+                }
+                
+                @bottom-center {
+                content: element(footer);
+                }
+                }
+                
+                div.header {
+                position: running(header);
+                width: 100%;
+                border: 1px solid #000000;
+                }
+                
+                div.footer {
+                position: running(footer);
+                width: 100%;
+                }
+                
+                .pagenumber:before {
+                content: counter(page);
+                }
+                
+                .pagecount:before {
+                content: counter(pages);
+                }
+                
+                body {
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                }
+                
+                .div_align_center {
+                display: block;
+                margin: auto !important;
+                padding: auto !important;
+                }
+                
+                .text_align_left {
+                text-align: left !important;
+                }
+                
+                .text_align_center {
+                text-align: center !important;
+                }
+                
+                .text_align_right {
+                text-align: right !important;
+                }
+                
+                .text_align_justify {
+                text-align: justify !important;
+                }
+                
+                .float_left {
+                float: left;
+                }
+                
+                .float_right {
+                float: right;
+                }
+                
+                .display_inline_block {
+                display: inline-block;
+                }
+                
+                .page_break_after_always {
+                page-break-after:always;
+                }
+                
+                .page_break_after_avoid {
+                page-break-after: avoid;
+                }
+                
+                table {
+                width: 100%;
+                /* font-size: 14px; */
+                background-color: #ffffff;
+                border: 1px solid #000000;
+                border-collapse: collapse;
+                margin-top: 0;
+                padding-top: 0;
+                margin-bottom: 0;
+                padding-bottom: 0;
+                }
+                
+                table th {
+                text-align: center; 
+                /* line-height: 15px; */
+                margin: 0;
+                padding: 5px;
+                border: 1px solid #000000;
+                /* font-weight: bold; */
+                background-color: #e1e3e6; 
+                }
+                
+                table td {
+                text-align: left; 
+                /* line-height: 15px; */
+                margin: 0;
+                padding: 5px;
+                border: 1px solid #000000;
+                }
+                
+                table tr, table td {
+                page-break-inside: avoid;
+                word-wrap: break-word;
+                }
+                
+                .width_10 {
+                width: 10%;
+                }
+                
+                .width_20 {
+                width: 20%;
+                }
+                
+                .width_30 {
+                width: 30%;
+                }
+                
+                .width_40 {
+                width: 40%;
+                }
+                
+                .width_49 {
+                width: 49%;
+                }
+                
+                .width_50 {
+                width: 50%;
+                }
+                
+                .width_60 {
+                width: 60%;
+                }
+                
+                .width_70 {
+                width: 70%;
+                }
+                
+                .width_80 {
+                width: 80%;
+                }
+                
+                .width_90 {
+                width: 90%;
+                }
+                
+                .width_100 {
+                width: 100%;
+                }
+                
+                .padding_top_10px {
+                padding-top: 10px;
+                }
+                
+                .padding_top_20px {
+                padding-top: 20px;
+                }
+                
+                .border_0 {
+                border: 0 !important;
+                }
+                
+                .border_width_1px {
+                border-width: 1px;
+                }
+                
+                .border_style_solid {
+                border-style: solid;
+                }
+                
+                .border_color_000000 {
+                border-color: #000000;
+                }
+                
+                .border_1px_solid_black {
+                border: 1px solid black;
+                }
+                
+            </style>
+            
+        </head>
+        
+        <body>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <td width="100%" style="border-left: 0; border-right: 0;">
+                                <div style="text-align: center; font-size: 20px; line-height: 30px;">
+                                    <b>
+                                        INDICATIVE AMORTISATION STATEMENT
+                                    </b>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left padding_top_20px">
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Purchase Price
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.purchasePrice}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Deposit
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.deposit}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Loan Amount
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.loanAmount}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Lender Fee Financed
+                            </th>
+                            <td>
+                                {!loanDetails.lenderFeeFinanced}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Lender Fee
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.lenderFee}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Amount Financed (Lender Fee)
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.amountFinancedLenderFee}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Other Fees/Charges
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.otherFeesCharges}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Net Amount Financed
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.netAmountFinanced}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Balloon Amount
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.balloonAmount}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                GST Recoup
+                            </th>
+                            <td>
+                                {!loanDetails.gstRecoup}
+                            </td>
+                        </tr>
+                        <apex:pageBlock rendered="{!IF(loanDetails.gstRecoup, true, false)}">
+                            <tr>
+                                <th width="50%" class="text_align_left">
+                                    GST Amount
+                                </th>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!loanDetails.gstAmount}" /> 
+                                    </apex:outputText>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th width="50%" class="text_align_left">
+                                    GST Recoup Instalment
+                                </th>
+                                <td>
+                                    {!loanDetails.gstRecoupInstalment}
+                                </td>
+                            </tr>
+                        </apex:pageBlock>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Account Keeping Fee
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.accountKeepingFee}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Repayment Structure
+                            </th>
+                            <td>
+                                {!loanDetails.repaymentStructure}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Repayment Frequency
+                            </th>
+                            <td>
+                                {!loanDetails.repaymentFrequency}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Number Of Instalments
+                            </th>
+                            <td>
+                                {!loanDetails.numberOfInstalments}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Loan Start Date
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Date, dd'/'MM'/'yyyy}">
+                                    <apex:param value="{!loanDetails.loanStartDate}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                First Repayment Due Date
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Date, dd'/'MM'/'yyyy}">
+                                    <apex:param value="{!loanDetails.firstRepaymentDueDate}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Loan End Date
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Date, dd'/'MM'/'yyyy}">
+                                    <apex:param value="{!loanDetails.loanEndDate}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Interest Rate
+                            </th>
+                            <td>
+                                {!loanDetails.interestRate}%
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Schedule Repayment
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.scheduleRepayment}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                GST Amount / Balloon Amount / Additional Repayments
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.totalAdditionalRepayments}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Estimated Total Interest Charges
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.totalInterestCharges}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th width="50%" class="text_align_left">
+                                Estimated Principal And Interest To Be Paid Over The Term Of The Loan
+                            </th>
+                            <td>
+                                <apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanDetails.totalAmountToBePaid}" /> 
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <p class="page_break_after_always">
+                    </p>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <th colspan="8">
+                                Instalments Details
+                            </th>
+                        </tr>
+                        <tr>
+                            <th width="12%">
+                                Instalment No
+                            </th>
+                            <th width="12%">
+                                Instalment Date
+                            </th>
+                            <th width="13%">
+                                Opening Balance
+                            </th>
+                            <th width="13%">
+                                GST Payment / Balloon Payment / Additional Repayments
+                            </th>
+                            <th width="13%">
+                                Repayment
+                            </th>
+                            <th width="12%">
+                                Interest
+                            </th>
+                            <th width="12%">
+                                Principle
+                            </th>
+                            <th width="13%">
+                                Closing Balance
+                            </th>
+                        </tr>
+                        <apex:repeat value="{!loanDetails.instalments}" var="instalment">
+                            <tr>
+                                <td>
+                                    {!instalment.instalmentNo}
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Date, dd'/'MM'/'yyyy}">
+                                        <apex:param value="{!instalment.instalmentDate}" /> 
+                                    </apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.openingBalance}" />
+                                    </apex:outputText> 
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.additionalRepayments}" />
+                                    </apex:outputText> 
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.repayment}" />
+                                    </apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.interest}" />
+                                    </apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.principle}" />
+                                    </apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0, Number, Currency}">
+                                        <apex:param value="{!instalment.closingBalance}" />
+                                    </apex:outputText> 
+                                </td>
+                            </tr>
+                        </apex:repeat>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <p class="page_break_after_always">
+                    </p>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <th>
+                                Comparison By Number Of Instalments
+                            </th>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left padding_top_20px">
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <apex:repeat value="{!loansByComparisonNumberOfInstalments}" var="loanByComparision">
+                        
+                        <table>
+                            <tr>
+                                <th colspan="5">
+                                    Loan Term Months ({!loanByComparision.loan.numberOfInstalments} Months)
+                                </th>
+                            </tr>
+                            <tr>
+                                <td width="40%">
+                                    Balloon Value (Percentage)
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td width="15%">
+                                        <apex:outputText value="{0, number, ##.##}%">
+                                            <apex:param value="{!loan.balloonValuePercentage}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Loan Amount
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.loanAmount}" />
+                                        </apex:outputText> 
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Balloon Amount
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.balloonAmount}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Schedule Repayment
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.scheduleRepayment}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Estimated Total Interest Charges
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.totalInterestCharges}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Estimated Principal And Interest To Be Paid Over The Term Of The Loan
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.totalAmountToBePaid}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                        </table>
+                        
+                        <div class="padding_top_20px">
+                        </div>
+                        
+                    </apex:repeat>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left padding_top_20px">
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <th>
+                                Comparison By Balloon Amount
+                            </th>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left padding_top_20px">
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <apex:repeat value="{!loansByComparisonBalloonAmountPercentage}" var="loanByComparision">
+                        
+                        <table>
+                            <tr>
+                                <th colspan="6">
+                                    Balloon Percentage
+                                    (<apex:outputText value="{0, number, ##.##}%">
+                                    <apex:param value="{!loanByComparision.loan.balloonValuePercentage}" />
+                                    </apex:outputText>) /
+                                    Balloon Amount (<apex:outputText value="{0, Number, Currency}">
+                                    <apex:param value="{!loanByComparision.loan.balloonAmount}" />
+                                    </apex:outputText>)
+                                </th>
+                            </tr>
+                            <tr>
+                                <td width="25%">
+                                    Loan Term (Months)
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td width="15%">
+                                        {!loan.numberOfInstalments}
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Loan Amount
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.loanAmount}" />
+                                        </apex:outputText> 
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Schedule Repayment
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.scheduleRepayment}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Estimated Total Interest Charges
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.totalInterestCharges}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Estimated Principal And Interest To Be Paid Over The Term Of The Loan
+                                </td>
+                                <apex:repeat value="{!loanByComparision.loans}" var="loan">
+                                    <td>
+                                        <apex:outputText value="{0, Number, Currency}">
+                                            <apex:param value="{!loan.totalAmountToBePaid}" />
+                                        </apex:outputText>
+                                    </td>
+                                </apex:repeat>
+                            </tr>
+                        </table>
+                        
+                        <div class="padding_top_20px">
+                        </div>
+                        
+                    </apex:repeat>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">    
+                <div class="width_100">
+                    
+                    <p class="page_break_after_always">
+                    </p>
+                    
+                </div>
+            </div>
+            
+            <div class="width_100 float_left">
+                <div class="width_100">
+                    
+                    <table>
+                        <tr>
+                            <td class="text_align_justify">
+                                <b>
+                                    DISCLAIMER:&nbsp;
+                                </b> 
+                                The calculations provided above are our rough estimates only and the information provided herein is for general informational purposes only. 
+                                It is not intended to be and should not be interpreted as professional or legal advice. While every effort has been made to ensure the accuracy of this information, 
+                                the author does not assume any responsibility for errors, omissions, or contrary interpretation of the subject matter herein. 
+                                The final loan repayments and the other calculations may change and will be confirmed in the lender's final loan agreement after the approval at the documents stage. 
+                                Some lenders are not putting the writing rates onto the loan documents and they only quote the base rates. 
+                                The writing rate is always higher and can be determined by the client himself as it includes all the other fees &#38; charges and other Loadings which includes but is not limited to any brokerage, aggregator charges, age and type of the asset along with the type of the supplier etc. All the calculations have been generated based on a number of assumptions and are provided to the addressee in good faith and for information purposes only. We recommend that the addressee check these calculations carefully to ensure it is suitable for their use. All amounts quoted within this document are indicative only including any balances quoted. For the avoidance of doubt and to the extent permitted by law neither the issuer of this document or any related party will be responsible for any person who relies on the information contained within this document.
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
+            </div>            
+        </body>
+        
+    </html>
+    
+</apex:page>

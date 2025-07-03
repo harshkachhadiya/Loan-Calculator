@@ -10,6 +10,10 @@
         <name>ApexPage</name>
     </types>
     <types>
+		<members>Loan_Calculator</members>
+		<name>CustomTab</name>
+	</types>
+    <types>
         <members>loanCalculator</members>
         <name>LightningComponentBundle</name>
     </types>

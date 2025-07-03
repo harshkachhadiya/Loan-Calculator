@@ -185,9 +185,25 @@ export default class LoanCalculator extends LightningElement {
         this.template.querySelector('.loan-calculator-container').appendChild(style);
     }
 
+    debounceTimer;
+
     handleChangeInput(event) {
+        
         let dataName = event.target.dataset.name;
         let value = event.detail.value ? event.detail.value : null;
+
+        if (this.debounceTimer) {
+            clearTimeout(this.debounceTimer);
+        }
+
+        this.debounceTimer = setTimeout(() => {
+            this.calculateLoanDetails(dataName, value);
+        }, 500);
+    }
+
+    calculateLoanDetails(dataName, value) {
+
+        this.isLoading = true;
 
         switch (dataName) {
             case 'purchasePrice':
@@ -238,17 +254,12 @@ export default class LoanCalculator extends LightningElement {
             this.loan.gstRecoupInstalment = null;
         }
 
-        setTimeout(() => {
-            this.calculateLoanDetails();
-        }, 100);
-    }
-
-    calculateLoanDetails() {
         if (!this.checkInputsValidity()) {
+            this.isLoading = false;
+
             return;
         }
 
-        this.isLoading = true;
         this.instalments = [];
         this.loansByComparisonNumberOfInstalments = [];
         this.loansByComparisonBalloonAmountPercentage = [];
